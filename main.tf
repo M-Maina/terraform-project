@@ -130,6 +130,25 @@ resource "aws_instance" "dev-sever" {
   
   key_name = "server-pair"
 
+  connection {
+    type = "ssh"
+    host = self.public_ip
+    user = "ec2-user"
+    private_key = "server-pair"
+  }
+
+ provisioner "file" {
+    source = "entry-sript.sh"
+    destination = "home/ec2-user/entry-sript.sh"
+  }
+
+  provisioner "remote-exec" {  #Not working
+    inline = [ 
+      "export ENV=dev",
+      "mkdir newdir"
+     ]
+  }
+
   tags = {
     Name = "${var.env_prefix}-dev-server"
   }
